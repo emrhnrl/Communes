@@ -1,9 +1,11 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@/lib/supabase/server'
+import { CommuneQueryRow, parseCommuneWithMemberCount } from '@/lib/db'
 import JoinButton from './JoinButton'
 
 async function getCommune(id: string) {
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('communes')
     .select('*, members(count)')
@@ -12,8 +14,8 @@ async function getCommune(id: string) {
 
   if (error || !data) return null
 
-  const { members, ...commune } = data as typeof data & { members: [{ count: number }] }
-  return { ...commune, memberCount: members[0]?.count ?? 0 }
+  const { member_count, ...commune } = parseCommuneWithMemberCount(data as CommuneQueryRow)
+  return { ...commune, memberCount: member_count }
 }
 
 export default async function CommuneDetailPage({

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@/lib/supabase/client'
 
 export default function JoinButton({ communeId }: { communeId: string }) {
   const [joined, setJoined] = useState(false)
@@ -12,10 +12,21 @@ export default function JoinButton({ communeId }: { communeId: string }) {
     setLoading(true)
     setError(null)
 
-    const { error } = await supabase.from('members').insert({ commune_id: communeId })
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) {
+      setError('You must be signed in to join a commune.')
+      setLoading(false)
+      return
+    }
+
+    const { error } = await supabase
+      .from('members')
+      .insert({ commune_id: communeId, user_id: user.id })
 
     if (error) {
-      setError(error.message)
+      setError('Something went wrong. Please try again.')
     } else {
       setJoined(true)
     }

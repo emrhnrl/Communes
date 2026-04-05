@@ -1,12 +1,10 @@
 import Link from 'next/link'
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@/lib/supabase/server'
 import CommuneCard from './components/CommuneCard'
-import { Database } from '@/lib/types'
-
-type CommuneRow = Database['public']['Tables']['communes']['Row']
-export type CommuneWithMemberCount = CommuneRow & { member_count: number }
+import { CommuneQueryRow, CommuneWithMemberCount, parseCommuneWithMemberCount } from '@/lib/db'
 
 async function getCommunes(): Promise<CommuneWithMemberCount[]> {
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('communes')
     .select('*, members(count)')
@@ -17,10 +15,7 @@ async function getCommunes(): Promise<CommuneWithMemberCount[]> {
     return []
   }
 
-  return (data ?? []).map((row) => {
-    const { members, ...commune } = row as CommuneRow & { members: [{ count: number }] }
-    return { ...commune, member_count: members[0]?.count ?? 0 }
-  })
+  return (data ?? []).map((row) => parseCommuneWithMemberCount(row as CommuneQueryRow))
 }
 
 export default async function HomePage() {

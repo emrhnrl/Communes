@@ -1,6 +1,6 @@
 'use server'
 
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 
 export type FormState = {
@@ -16,10 +16,12 @@ export async function createCommune(
   const category = formData.get('category')?.toString() || null
   const city = formData.get('city')?.toString().trim() || null
 
-  if (!name) {
-    return { error: 'Name is required.' }
-  }
+  if (!name) return { error: 'Name is required.' }
+  if (name.length > 100) return { error: 'Name must be 100 characters or fewer.' }
+  if (description && description.length > 500) return { error: 'Description must be 500 characters or fewer.' }
+  if (city && city.length > 100) return { error: 'City must be 100 characters or fewer.' }
 
+  const supabase = await createClient()
   const { error } = await supabase.from('communes').insert({
     name,
     description,
@@ -28,7 +30,8 @@ export async function createCommune(
   })
 
   if (error) {
-    return { error: error.message }
+    console.error('Failed to create commune:', error.message)
+    return { error: 'Something went wrong. Please try again.' }
   }
 
   redirect('/')
