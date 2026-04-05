@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { CommuneQueryRow, parseCommuneWithMemberCount } from '@/lib/db'
+import AppHeader from '@/app/components/AppHeader'
 import JoinButton from './JoinButton'
 
 async function getCommune(id: string) {
@@ -30,16 +31,11 @@ export default async function CommuneDetailPage({
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="mx-auto flex max-w-5xl items-center px-6 py-4">
-          <Link
-            href="/"
-            className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50"
-          >
-            Communes
-          </Link>
-        </div>
-      </header>
+      <AppHeader>
+        <Link href="/" className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+          Communes
+        </Link>
+      </AppHeader>
 
       <main className="mx-auto max-w-2xl px-6 py-12">
         {/* Back link */}

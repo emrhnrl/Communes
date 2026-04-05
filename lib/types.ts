@@ -22,3 +22,6 @@ export type Database = {
     }
   }
 }
+
+type CommuneRow = Database['public']['Tables']['communes']['Row']
+export type CommuneWithMemberCount = CommuneRow & { member_count: number }

@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import AppHeader from './components/AppHeader'
 import CommuneCard from './components/CommuneCard'
 import { CommuneQueryRow, CommuneWithMemberCount, parseCommuneWithMemberCount } from '@/lib/db'
 
@@ -23,25 +24,22 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      {/* Header */}
-      <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-          <div>
-            <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-              Communes
-            </h1>
-            <p className="text-xs text-zinc-400 dark:text-zinc-500">
-              Find your people, in your city.
-            </p>
-          </div>
-          <Link
-            href="/communes/new"
-            className="rounded-full bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-500"
-          >
-            + Create commune
-          </Link>
+      <AppHeader className="justify-between">
+        <div>
+          <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+            Communes
+          </h1>
+          <p className="text-xs text-zinc-400 dark:text-zinc-500">
+            Find your people, in your city.
+          </p>
         </div>
-      </header>
+        <Link
+          href="/communes/new"
+          className="rounded-full bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-500"
+        >
+          + Create commune
+        </Link>
+      </AppHeader>
 
       {/* Main content */}
       <main className="mx-auto max-w-5xl px-6 py-10">
