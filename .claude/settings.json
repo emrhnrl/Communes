@@ -1,0 +1,18 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "agent",
+            "if": "Bash(git commit*)",
+            "prompt": "Run the code-reviewer agent defined in .claude/agents/code-reviewer.md. Review all staged changes (git diff --cached) before this commit proceeds. If you find any critical issues, output JSON with {\"decision\": \"block\", \"reason\": \"<summary of critical issues>\"}. If warnings or suggestions only, output {\"decision\": \"allow\"} and summarise findings as a systemMessage. If everything looks good, output {\"decision\": \"allow\"}.",
+            "statusMessage": "Running code review before commit...",
+            "timeout": 120
+          }
+        ]
+      }
+    ]
+  }
+}
