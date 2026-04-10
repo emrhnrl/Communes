@@ -31,7 +31,7 @@ export default async function HomePage() {
             Communes
           </h1>
           <p className="text-xs text-zinc-400 dark:text-zinc-500">
-            Find your people, in your city.
+            Your city. Your people.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -50,16 +50,16 @@ export default async function HomePage() {
         {communes.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-3 py-24 text-center">
             <p className="text-lg font-medium text-zinc-700 dark:text-zinc-300">
-              No communes yet
+              No communes yet — be the first.
             </p>
             <p className="text-sm text-zinc-400 dark:text-zinc-500">
-              Be the first to create one in your city.
+              Start one and invite people in your city to join.
             </p>
           </div>
         ) : (
           <>
             <p className="mb-6 text-sm text-zinc-500 dark:text-zinc-400">
-              {communes.length} {communes.length === 1 ? 'commune' : 'communes'} found
+              {communes.length} {communes.length === 1 ? 'commune' : 'communes'} in your area
             </p>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {communes.map((commune) => (

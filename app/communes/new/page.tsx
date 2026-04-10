@@ -20,10 +20,10 @@ export default function NewCommunePage() {
       <main className="mx-auto max-w-xl px-6 py-12">
         <div className="mb-8">
           <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-            Create a commune
+            Start a commune
           </h1>
           <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-            Start a new community and invite people in your city to join.
+            Gather your people. Create a space for the things you love.
           </p>
         </div>
 

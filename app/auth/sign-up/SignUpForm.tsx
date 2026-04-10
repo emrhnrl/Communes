@@ -30,9 +30,9 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps) {
   if (state.success) {
     return (
       <div className="rounded-xl border border-indigo-100 bg-indigo-50 px-6 py-8 text-center dark:border-indigo-900 dark:bg-indigo-950">
-        <p className="font-medium text-indigo-700 dark:text-indigo-300">Check your email</p>
+        <p className="font-medium text-indigo-700 dark:text-indigo-300">Check your inbox</p>
         <p className="mt-1 text-sm text-indigo-600 dark:text-indigo-400">
-          We sent you a confirmation link. Click it to activate your account.
+          We sent you a link — click it and you&apos;re in!
         </p>
       </div>
     )

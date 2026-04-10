@@ -23,10 +23,10 @@ export default async function SignUpPage({
 
       <main className="mx-auto max-w-sm px-6 py-16">
         <h1 className="mb-2 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-          Create your account
+          Join the community
         </h1>
         <p className="mb-8 text-sm text-zinc-500 dark:text-zinc-400">
-          Join Communes and find your people in your city.
+          Your people are out there. Let&apos;s find them.
         </p>
 
         <SignUpForm redirectTo={redirectTo} />

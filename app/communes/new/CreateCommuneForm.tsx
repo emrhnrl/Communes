@@ -26,7 +26,7 @@ function SubmitButton() {
       disabled={pending}
       className="rounded-full bg-indigo-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
     >
-      {pending ? 'Creating…' : 'Create commune'}
+      {pending ? 'Starting…' : 'Start commune'}
     </button>
   )
 }
@@ -68,7 +68,7 @@ export default function CreateCommuneForm() {
           id="description"
           name="description"
           rows={4}
-          placeholder="What is this commune about? Who should join?"
+          placeholder="What brings people together here? Who's it for?"
           maxLength={500}
           className="resize-none rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50 dark:placeholder:text-zinc-500"
         />

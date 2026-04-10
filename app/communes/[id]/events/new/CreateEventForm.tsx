@@ -1,9 +1,84 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useState, useRef, useEffect } from 'react'
 import { useFormStatus } from 'react-dom'
 import Link from 'next/link'
 import { createEvent, FormState } from './actions'
+
+const ITEM_HEIGHT = 36 // px per option row
+const VISIBLE_ITEMS = 8
+
+function TimeSelect({
+  name,
+  options,
+  defaultValue,
+}: {
+  name: string
+  options: string[]
+  defaultValue: string
+}) {
+  const [value, setValue] = useState(defaultValue)
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  // Close on outside click
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [])
+
+  const maxHeight = ITEM_HEIGHT * VISIBLE_ITEMS
+
+  return (
+    <div ref={ref} className="relative">
+      <input type="hidden" name={name} value={value} />
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="flex w-24 items-center justify-center gap-1 rounded-xl border border-zinc-200 bg-white py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
+      >
+        {value}
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-3 text-zinc-400">
+          <path fillRule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
+        </svg>
+      </button>
+
+      {open && (
+        <div
+          className="absolute left-0 top-full z-10 mt-1 w-24 overflow-y-auto rounded-xl border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-800"
+          style={{ maxHeight }}
+        >
+          {options.map((opt) => (
+            <button
+              key={opt}
+              type="button"
+              onClick={() => { setValue(opt); setOpen(false) }}
+              className={`flex w-full items-center justify-center text-sm transition-colors hover:bg-indigo-50 dark:hover:bg-zinc-700 ${
+                opt === value
+                  ? 'bg-indigo-600 font-medium text-white'
+                  : 'text-zinc-900 dark:text-zinc-50'
+              }`}
+              style={{ height: ITEM_HEIGHT }}
+            >
+              {opt}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+const TIME_OPTIONS = Array.from({ length: 48 }, (_, i) => {
+  const h = Math.floor(i / 2)
+  const m = i % 2 === 0 ? '00' : '30'
+  return `${h}:${m}`
+})
 
 function SubmitButton() {
   const { pending } = useFormStatus()
@@ -13,7 +88,7 @@ function SubmitButton() {
       disabled={pending}
       className="rounded-full bg-indigo-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
     >
-      {pending ? 'Creating…' : 'Create event'}
+      {pending ? 'Saving…' : 'Publish event'}
     </button>
   )
 }
@@ -51,59 +126,37 @@ export default function CreateEventForm({ communeId }: CreateEventFormProps) {
         />
       </div>
 
-      {/* Date & time */}
-      <div className="flex flex-col gap-1.5">
-        <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-          Date & time <span className="text-red-500">*</span>
-        </label>
-        <div className="grid grid-cols-[1fr_auto_auto] gap-2">
-          <input
-            id="event_date_day"
-            name="event_date_day"
-            type="date"
-            required
-            className="rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
-          />
-          <select
-            name="event_date_hour"
-            required
-            defaultValue="12"
-            className="rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
-          >
-            {Array.from({ length: 24 }, (_, i) => (
-              <option key={i} value={i}>
-                {String(i).padStart(2, '0')}
-              </option>
-            ))}
-          </select>
-          <select
-            name="event_date_minute"
-            required
-            defaultValue="0"
-            className="rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
-          >
-            {[0, 15, 30, 45].map((m) => (
-              <option key={m} value={m}>
-                {String(m).padStart(2, '0')}
-              </option>
-            ))}
-          </select>
+      {/* Date & Location side by side */}
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div className="flex flex-col gap-1.5">
+          <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            Date & time <span className="text-red-500">*</span>
+          </label>
+          <div className="flex items-center gap-2">
+            <input
+              id="event_date_day"
+              name="event_date_day"
+              type="date"
+              required
+              className="min-w-0 flex-1 rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
+            />
+            <TimeSelect name="event_date_time" options={TIME_OPTIONS} defaultValue="12:00" />
+          </div>
         </div>
-      </div>
 
-      {/* Location */}
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="location" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-          Location
-        </label>
-        <input
-          id="location"
-          name="location"
-          type="text"
-          placeholder="e.g. Café Central, Berlin"
-          maxLength={100}
-          className="rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50 dark:placeholder:text-zinc-500"
-        />
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="location" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            Location
+          </label>
+          <input
+            id="location"
+            name="location"
+            type="text"
+            placeholder="e.g. Café Central, Berlin"
+            maxLength={100}
+            className="rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50 dark:placeholder:text-zinc-500"
+          />
+        </div>
       </div>
 
       {/* Description */}
@@ -115,7 +168,7 @@ export default function CreateEventForm({ communeId }: CreateEventFormProps) {
           id="description"
           name="description"
           rows={4}
-          placeholder="What will happen at this event?"
+          placeholder="What's the plan? What should people expect?"
           maxLength={500}
           className="resize-none rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50 dark:placeholder:text-zinc-500"
         />

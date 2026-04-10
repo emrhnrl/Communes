@@ -26,7 +26,7 @@ export default async function SignInPage({
           Welcome back
         </h1>
         <p className="mb-8 text-sm text-zinc-500 dark:text-zinc-400">
-          Sign in to your account to continue.
+          Pick up where you left off.
         </p>
 
         {error && (

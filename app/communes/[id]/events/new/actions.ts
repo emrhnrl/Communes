@@ -15,8 +15,7 @@ export async function createEvent(
   const title = formData.get('title')?.toString().trim() ?? ''
   const description = formData.get('description')?.toString().trim() || null
   const day = formData.get('event_date_day')?.toString() ?? ''
-  const hour = formData.get('event_date_hour')?.toString() ?? ''
-  const minute = formData.get('event_date_minute')?.toString() ?? ''
+  const time = formData.get('event_date_time')?.toString() ?? '12:00'
   const location = formData.get('location')?.toString().trim() || null
 
   if (!title) return { error: 'Title is required.' }
@@ -25,7 +24,8 @@ export async function createEvent(
   if (location && location.length > 100) return { error: 'Location must be 100 characters or fewer.' }
   if (!day) return { error: 'Date and time are required.' }
 
-  const eventDate = `${day}T${hour.padStart(2, '0')}:${minute.padStart(2, '0')}:00`
+  const [h, m] = time.split(':')
+  const eventDate = `${day}T${h.padStart(2, '0')}:${m}:00`
 
   const supabase = await createClient()
 

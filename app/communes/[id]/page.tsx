@@ -146,7 +146,7 @@ export default async function CommuneDetailPage({
             </p>
           ) : (
             <p className="text-sm italic text-zinc-400 dark:text-zinc-500">
-              No description provided.
+              The organiser hasn&apos;t added a description yet.
             </p>
           )}
 
@@ -174,7 +174,7 @@ export default async function CommuneDetailPage({
 
           {events.length === 0 ? (
             <p className="text-sm italic text-zinc-400 dark:text-zinc-500">
-              No events yet. Be the first to create one!
+              No events planned yet. Join and be the first to organise one!
             </p>
           ) : (
             <div className="flex flex-col gap-3">
