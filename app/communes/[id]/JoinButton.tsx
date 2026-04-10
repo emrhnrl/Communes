@@ -40,11 +40,49 @@ export default function JoinButton({ communeId, initialIsMember }: JoinButtonPro
     setLoading(false)
   }
 
+  async function handleLeave() {
+    setLoading(true)
+    setError(null)
+
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) return
+
+    const { error } = await supabase
+      .from('members')
+      .delete()
+      .eq('commune_id', communeId)
+      .eq('user_id', user.id)
+
+    if (error) {
+      setError('Something went wrong. Please try again.')
+    } else {
+      setJoined(false)
+    }
+
+    setLoading(false)
+  }
+
   if (joined) {
     return (
-      <p className="text-sm font-medium text-teal-600 dark:text-teal-400">
-        You&apos;re a member
-      </p>
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-3">
+          <p className="text-sm font-medium text-teal-600 dark:text-teal-400">
+            You&apos;re a member
+          </p>
+          <button
+            onClick={handleLeave}
+            disabled={loading}
+            className="text-xs text-zinc-400 underline-offset-2 transition-colors hover:text-red-500 hover:underline disabled:cursor-not-allowed disabled:opacity-50 dark:text-zinc-500"
+          >
+            {loading ? 'Leaving…' : 'Leave commune'}
+          </button>
+        </div>
+        {error && (
+          <p className="text-xs text-red-500 dark:text-red-400">{error}</p>
+        )}
+      </div>
     )
   }
 
