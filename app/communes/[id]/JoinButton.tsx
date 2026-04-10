@@ -42,7 +42,7 @@ export default function JoinButton({ communeId, initialIsMember }: JoinButtonPro
 
   if (joined) {
     return (
-      <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400">
+      <p className="text-sm font-medium text-teal-600 dark:text-teal-400">
         You&apos;re a member
       </p>
     )
@@ -53,7 +53,7 @@ export default function JoinButton({ communeId, initialIsMember }: JoinButtonPro
       <button
         onClick={handleJoin}
         disabled={loading}
-        className="w-fit rounded-full bg-indigo-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
+        className="w-fit rounded-full bg-teal-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-teal-500 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {loading ? 'Joining…' : 'Join commune'}
       </button>

@@ -24,7 +24,7 @@ export default function EventCard({ event }: EventCardProps) {
       <div className="flex items-start justify-between gap-4">
         <h3 className="font-semibold text-zinc-900 dark:text-zinc-50">{event.title}</h3>
         <span className="shrink-0 text-xs text-zinc-400 dark:text-zinc-500">
-          {dateLabel} · {timeLabel}
+          {dateLabel} Â· {timeLabel}
         </span>
       </div>
 

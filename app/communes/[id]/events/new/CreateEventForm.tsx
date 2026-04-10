@@ -40,7 +40,7 @@ function TimeSelect({
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex w-24 items-center justify-center gap-1 rounded-xl border border-zinc-200 bg-white py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
+        className="flex w-24 items-center justify-center gap-1 rounded-xl border border-zinc-200 bg-white py-2.5 text-sm text-zinc-900 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
       >
         {value}
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-3 text-zinc-400">
@@ -58,9 +58,9 @@ function TimeSelect({
               key={opt}
               type="button"
               onClick={() => { setValue(opt); setOpen(false) }}
-              className={`flex w-full items-center justify-center text-sm transition-colors hover:bg-indigo-50 dark:hover:bg-zinc-700 ${
+              className={`flex w-full items-center justify-center text-sm transition-colors hover:bg-teal-50 dark:hover:bg-zinc-700 ${
                 opt === value
-                  ? 'bg-indigo-600 font-medium text-white'
+                  ? 'bg-teal-600 font-medium text-white'
                   : 'text-zinc-900 dark:text-zinc-50'
               }`}
               style={{ height: ITEM_HEIGHT }}
@@ -86,7 +86,7 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="rounded-full bg-indigo-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
+      className="rounded-full bg-teal-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-teal-500 disabled:cursor-not-allowed disabled:opacity-60"
     >
       {pending ? 'Saving…' : 'Publish event'}
     </button>
@@ -122,7 +122,7 @@ export default function CreateEventForm({ communeId }: CreateEventFormProps) {
           required
           placeholder="e.g. Monthly meetup at the park"
           maxLength={100}
-          className="rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50 dark:placeholder:text-zinc-500"
+          className="rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50 dark:placeholder:text-zinc-500"
         />
       </div>
 
@@ -138,7 +138,7 @@ export default function CreateEventForm({ communeId }: CreateEventFormProps) {
               name="event_date_day"
               type="date"
               required
-              className="min-w-0 flex-1 rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
+              className="min-w-0 flex-1 rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
             />
             <TimeSelect name="event_date_time" options={TIME_OPTIONS} defaultValue="12:00" />
           </div>
@@ -154,7 +154,7 @@ export default function CreateEventForm({ communeId }: CreateEventFormProps) {
             type="text"
             placeholder="e.g. Café Central, Berlin"
             maxLength={100}
-            className="rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50 dark:placeholder:text-zinc-500"
+            className="rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50 dark:placeholder:text-zinc-500"
           />
         </div>
       </div>
@@ -170,7 +170,7 @@ export default function CreateEventForm({ communeId }: CreateEventFormProps) {
           rows={4}
           placeholder="What's the plan? What should people expect?"
           maxLength={500}
-          className="resize-none rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50 dark:placeholder:text-zinc-500"
+          className="resize-none rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50 dark:placeholder:text-zinc-500"
         />
       </div>
 

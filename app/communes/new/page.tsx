@@ -4,7 +4,7 @@ import AuthButton from '@/app/components/AuthButton'
 import CreateCommuneForm from './CreateCommuneForm'
 
 export const metadata = {
-  title: 'Create a commune — Communes',
+  title: 'Create a commune â€” Communes',
 }
 
 export default function NewCommunePage() {

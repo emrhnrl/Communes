@@ -11,9 +11,9 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="w-full rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
+      className="w-full rounded-xl bg-teal-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-60"
     >
-      {pending ? 'Signing in…' : 'Sign in'}
+      {pending ? 'Signing inâ€¦' : 'Sign in'}
     </button>
   )
 }
@@ -46,7 +46,7 @@ export default function SignInForm({ redirectTo }: SignInFormProps) {
           required
           autoComplete="email"
           placeholder="you@example.com"
-          className="rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50 dark:placeholder:text-zinc-500"
+          className="rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50 dark:placeholder:text-zinc-500"
         />
       </div>
 
@@ -60,8 +60,8 @@ export default function SignInForm({ redirectTo }: SignInFormProps) {
           type="password"
           required
           autoComplete="current-password"
-          placeholder="••••••••"
-          className="rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50 dark:placeholder:text-zinc-500"
+          placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+          className="rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50 dark:placeholder:text-zinc-500"
         />
       </div>
 
@@ -71,7 +71,7 @@ export default function SignInForm({ redirectTo }: SignInFormProps) {
         Don&apos;t have an account?{' '}
         <Link
           href={`/auth/sign-up${redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ''}`}
-          className="font-medium text-indigo-600 hover:underline dark:text-indigo-400"
+          className="font-medium text-teal-600 hover:underline dark:text-teal-400"
         >
           Sign up
         </Link>

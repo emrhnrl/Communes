@@ -35,7 +35,7 @@ export default function UserAvatar({ name, joinedAt, avatarUrl }: UserAvatarProp
             className="rounded-full object-cover"
           />
         ) : (
-          <div className="flex size-10 items-center justify-center rounded-full bg-indigo-100 text-sm font-semibold text-indigo-600 dark:bg-indigo-950 dark:text-indigo-300">
+          <div className="flex size-10 items-center justify-center rounded-full bg-teal-100 text-sm font-semibold text-teal-600 dark:bg-teal-950 dark:text-teal-300">
             {getInitials(name)}
           </div>
         )}

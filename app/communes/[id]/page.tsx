@@ -98,7 +98,7 @@ export default async function CommuneDetailPage({
               {commune.name}
             </h1>
             {commune.category && (
-              <span className="shrink-0 rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-600 dark:bg-indigo-950 dark:text-indigo-300">
+              <span className="shrink-0 rounded-full bg-teal-50 px-3 py-1 text-xs font-medium text-teal-600 dark:bg-teal-950 dark:text-teal-300">
                 {commune.category}
               </span>
             )}
@@ -165,7 +165,7 @@ export default async function CommuneDetailPage({
             {isMember && (
               <Link
                 href={`/communes/${commune.id}/events/new`}
-                className="rounded-full bg-indigo-600 px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-indigo-500"
+                className="rounded-full bg-teal-600 px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-teal-500"
               >
                 + New event
               </Link>

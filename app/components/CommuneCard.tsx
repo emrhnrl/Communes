@@ -20,7 +20,7 @@ export default function CommuneCard({
           {commune.name}
         </h2>
         {commune.category && (
-          <span className="shrink-0 rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-medium text-indigo-600 dark:bg-indigo-950 dark:text-indigo-300">
+          <span className="shrink-0 rounded-full bg-teal-50 px-2.5 py-0.5 text-xs font-medium text-teal-600 dark:bg-teal-950 dark:text-teal-300">
             {commune.category}
           </span>
         )}

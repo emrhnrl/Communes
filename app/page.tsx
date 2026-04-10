@@ -37,7 +37,7 @@ export default async function HomePage() {
         <div className="flex items-center gap-3">
           <Link
             href="/communes/new"
-            className="rounded-full bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-500"
+            className="rounded-full bg-teal-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-700"
           >
             + Create commune
           </Link>
@@ -50,7 +50,7 @@ export default async function HomePage() {
         {communes.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-3 py-24 text-center">
             <p className="text-lg font-medium text-zinc-700 dark:text-zinc-300">
-              No communes yet — be the first.
+              No communes yet â€” be the first.
             </p>
             <p className="text-sm text-zinc-400 dark:text-zinc-500">
               Start one and invite people in your city to join.

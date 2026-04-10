@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Communes — Find your people",
+  title: "Communes â€” Find your people",
   description: "Browse and join communities in your city.",
 };
 

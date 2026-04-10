@@ -3,7 +3,7 @@ import AppHeader from '@/app/components/AppHeader'
 import SignUpForm from './SignUpForm'
 
 export const metadata = {
-  title: 'Create account — Communes',
+  title: 'Create account â€” Communes',
 }
 
 export default async function SignUpPage({

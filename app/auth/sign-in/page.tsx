@@ -3,7 +3,7 @@ import AppHeader from '@/app/components/AppHeader'
 import SignInForm from './SignInForm'
 
 export const metadata = {
-  title: 'Sign in — Communes',
+  title: 'Sign in â€” Communes',
 }
 
 export default async function SignInPage({

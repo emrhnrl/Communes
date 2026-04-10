@@ -11,9 +11,9 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="w-full rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
+      className="w-full rounded-xl bg-teal-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-60"
     >
-      {pending ? 'Creating account…' : 'Create account'}
+      {pending ? 'Creating accountâ€¦' : 'Create account'}
     </button>
   )
 }
@@ -29,10 +29,10 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps) {
 
   if (state.success) {
     return (
-      <div className="rounded-xl border border-indigo-100 bg-indigo-50 px-6 py-8 text-center dark:border-indigo-900 dark:bg-indigo-950">
-        <p className="font-medium text-indigo-700 dark:text-indigo-300">Check your inbox</p>
-        <p className="mt-1 text-sm text-indigo-600 dark:text-indigo-400">
-          We sent you a link — click it and you&apos;re in!
+      <div className="rounded-xl border border-teal-100 bg-teal-50 px-6 py-8 text-center dark:border-teal-900 dark:bg-teal-950">
+        <p className="font-medium text-teal-700 dark:text-teal-300">Check your inbox</p>
+        <p className="mt-1 text-sm text-teal-600 dark:text-teal-400">
+          We sent you a link â€” click it and you&apos;re in!
         </p>
       </div>
     )
@@ -57,7 +57,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps) {
           required
           autoComplete="email"
           placeholder="you@example.com"
-          className="rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50 dark:placeholder:text-zinc-500"
+          className="rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50 dark:placeholder:text-zinc-500"
         />
       </div>
 
@@ -73,7 +73,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps) {
           autoComplete="new-password"
           placeholder="At least 8 characters"
           minLength={8}
-          className="rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50 dark:placeholder:text-zinc-500"
+          className="rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50 dark:placeholder:text-zinc-500"
         />
       </div>
 
@@ -83,7 +83,7 @@ export default function SignUpForm({ redirectTo }: SignUpFormProps) {
         Already have an account?{' '}
         <Link
           href={`/auth/sign-in${redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ''}`}
-          className="font-medium text-indigo-600 hover:underline dark:text-indigo-400"
+          className="font-medium text-teal-600 hover:underline dark:text-teal-400"
         >
           Sign in
         </Link>
