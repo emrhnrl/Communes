@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import AppHeader from './components/AppHeader'
+import AuthButton from './components/AuthButton'
 import CommuneCard from './components/CommuneCard'
 import { CommuneQueryRow, CommuneWithMemberCount, parseCommuneWithMemberCount } from '@/lib/db'
 
@@ -33,12 +34,15 @@ export default async function HomePage() {
             Find your people, in your city.
           </p>
         </div>
-        <Link
-          href="/communes/new"
-          className="rounded-full bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-500"
-        >
-          + Create commune
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/communes/new"
+            className="rounded-full bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-500"
+          >
+            + Create commune
+          </Link>
+          <AuthButton />
+        </div>
       </AppHeader>
 
       {/* Main content */}

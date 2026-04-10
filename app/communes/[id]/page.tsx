@@ -2,8 +2,13 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { CommuneQueryRow, parseCommuneWithMemberCount } from '@/lib/db'
+import { Database } from '@/lib/types'
 import AppHeader from '@/app/components/AppHeader'
+import AuthButton from '@/app/components/AuthButton'
+import EventCard from '@/app/components/EventCard'
 import JoinButton from './JoinButton'
+
+type Event = Database['public']['Tables']['events']['Row']
 
 async function getCommune(id: string) {
   const supabase = await createClient()
@@ -19,22 +24,50 @@ async function getCommune(id: string) {
   return { ...commune, memberCount: member_count }
 }
 
+async function getEvents(communeId: string): Promise<Event[]> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('events')
+    .select('*')
+    .eq('commune_id', communeId)
+    .order('event_date', { ascending: true })
+  return data ?? []
+}
+
+async function getIsMember(communeId: string): Promise<boolean> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return false
+  const { data } = await supabase
+    .from('members')
+    .select('id')
+    .eq('commune_id', communeId)
+    .eq('user_id', user.id)
+    .maybeSingle()
+  return !!data
+}
+
 export default async function CommuneDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const commune = await getCommune(id)
+  const [commune, events, isMember] = await Promise.all([
+    getCommune(id),
+    getEvents(id),
+    getIsMember(id),
+  ])
 
   if (!commune) notFound()
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      <AppHeader>
+      <AppHeader className="justify-between">
         <Link href="/" className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
           Communes
         </Link>
+        <AuthButton />
       </AppHeader>
 
       <main className="mx-auto max-w-2xl px-6 py-12">
@@ -119,8 +152,37 @@ export default async function CommuneDetailPage({
 
           {/* Join */}
           <div className="mt-8">
-            <JoinButton communeId={commune.id} />
+            <JoinButton communeId={commune.id} initialIsMember={isMember} />
           </div>
+        </div>
+
+        {/* Events */}
+        <div className="mt-8">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+              Events
+            </h2>
+            {isMember && (
+              <Link
+                href={`/communes/${commune.id}/events/new`}
+                className="rounded-full bg-indigo-600 px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-indigo-500"
+              >
+                + New event
+              </Link>
+            )}
+          </div>
+
+          {events.length === 0 ? (
+            <p className="text-sm italic text-zinc-400 dark:text-zinc-500">
+              No events yet. Be the first to create one!
+            </p>
+          ) : (
+            <div className="flex flex-col gap-3">
+              {events.map((event) => (
+                <EventCard key={event.id} event={event} />
+              ))}
+            </div>
+          )}
         </div>
       </main>
     </div>

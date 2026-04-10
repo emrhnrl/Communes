@@ -19,6 +19,17 @@ export type Database = {
           created_at: string
         }
       }
+      events: {
+        Row: {
+          id: string
+          commune_id: string
+          title: string
+          description: string | null
+          event_date: string
+          location: string | null
+          created_at: string
+        }
+      }
     }
   }
 }

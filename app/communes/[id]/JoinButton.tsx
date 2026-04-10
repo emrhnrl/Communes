@@ -1,12 +1,19 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
-export default function JoinButton({ communeId }: { communeId: string }) {
-  const [joined, setJoined] = useState(false)
+interface JoinButtonProps {
+  communeId: string
+  initialIsMember: boolean
+}
+
+export default function JoinButton({ communeId, initialIsMember }: JoinButtonProps) {
+  const [joined, setJoined] = useState(initialIsMember)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const router = useRouter()
 
   async function handleJoin() {
     setLoading(true)
@@ -16,8 +23,7 @@ export default function JoinButton({ communeId }: { communeId: string }) {
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
-      setError('You must be signed in to join a commune.')
-      setLoading(false)
+      router.push(`/auth/sign-in?redirectTo=/communes/${communeId}`)
       return
     }
 
@@ -37,7 +43,7 @@ export default function JoinButton({ communeId }: { communeId: string }) {
   if (joined) {
     return (
       <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400">
-        You&apos;ve joined this commune!
+        You&apos;re a member
       </p>
     )
   }

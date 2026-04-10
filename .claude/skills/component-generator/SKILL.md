@@ -17,3 +17,5 @@ Component structure:
 - Props interface at the top
 - Component function
 - Default export at the bottom
+
+If the user asks for examples or a reference component, read `references/component-examples.md`.

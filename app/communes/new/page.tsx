@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import AppHeader from '@/app/components/AppHeader'
+import AuthButton from '@/app/components/AuthButton'
 import CreateCommuneForm from './CreateCommuneForm'
 
 export const metadata = {
@@ -9,10 +10,11 @@ export const metadata = {
 export default function NewCommunePage() {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      <AppHeader>
+      <AppHeader className="justify-between">
         <Link href="/" className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
           Communes
         </Link>
+        <AuthButton />
       </AppHeader>
 
       <main className="mx-auto max-w-xl px-6 py-12">
