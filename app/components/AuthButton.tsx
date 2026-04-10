@@ -24,6 +24,12 @@ export default async function AuthButton() {
       <span className="hidden text-sm text-zinc-500 dark:text-zinc-400 sm:block">
         {user.email}
       </span>
+      <Link
+        href="/profile"
+        className="text-sm text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50 transition-colors"
+      >
+        Profile
+      </Link>
       <form action={signOut}>
         <button
           type="submit"

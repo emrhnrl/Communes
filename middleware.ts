@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-const PROTECTED_PATHS = ['/communes/new']
+const PROTECTED_PATHS = ['/communes/new', '/profile']
 const PROTECTED_PATTERN = /^\/communes\/[^/]+\/events\/new/
 
 function isProtected(pathname: string) {

@@ -10,6 +10,16 @@ import JoinButton from './JoinButton'
 
 type Event = Database['public']['Tables']['events']['Row']
 
+type MemberWithProfile = {
+  id: string
+  user_id: string
+  created_at: string
+  profiles: {
+    display_name: string | null
+    avatar_url: string | null
+  } | null
+}
+
 async function getCommune(id: string) {
   const supabase = await createClient()
   const { data, error } = await supabase
@@ -34,6 +44,34 @@ async function getEvents(communeId: string): Promise<Event[]> {
   return data ?? []
 }
 
+async function getMembers(communeId: string): Promise<MemberWithProfile[]> {
+  const supabase = await createClient()
+
+  const { data: memberRows } = await supabase
+    .from('members')
+    .select('id, user_id, created_at')
+    .eq('commune_id', communeId)
+    .order('created_at', { ascending: true })
+
+  if (!memberRows || memberRows.length === 0) return []
+
+  const userIds = memberRows.map((m) => m.user_id)
+
+  const { data: profileRows } = await supabase
+    .from('profiles')
+    .select('id, display_name, avatar_url')
+    .in('id', userIds)
+
+  const profileMap = new Map(
+    (profileRows ?? []).map((p) => [p.id, { display_name: p.display_name, avatar_url: p.avatar_url }])
+  )
+
+  return memberRows.map((m) => ({
+    ...m,
+    profiles: profileMap.get(m.user_id) ?? null,
+  }))
+}
+
 async function getIsMember(communeId: string): Promise<boolean> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -53,10 +91,11 @@ export default async function CommuneDetailPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const [commune, events, isMember] = await Promise.all([
+  const [commune, events, isMember, members] = await Promise.all([
     getCommune(id),
     getEvents(id),
     getIsMember(id),
+    getMembers(id),
   ])
 
   if (!commune) notFound()
@@ -123,7 +162,10 @@ export default async function CommuneDetailPage({
                 {commune.city}
               </span>
             )}
-            <span className="flex items-center gap-1.5">
+            <a
+              href="#members"
+              className="flex items-center gap-1.5 transition-colors hover:text-zinc-700 dark:hover:text-zinc-200"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 16 16"
@@ -133,7 +175,7 @@ export default async function CommuneDetailPage({
                 <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
               </svg>
               {commune.memberCount} {commune.memberCount === 1 ? 'member' : 'members'}
-            </span>
+            </a>
           </div>
 
           {/* Divider */}
@@ -148,6 +190,42 @@ export default async function CommuneDetailPage({
             <p className="text-sm italic text-zinc-400 dark:text-zinc-500">
               The organiser hasn&apos;t added a description yet.
             </p>
+          )}
+
+          {/* Members */}
+          {members.length > 0 && (
+            <div id="members" className="mt-8">
+              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-400 dark:text-zinc-500">
+                Members
+              </h2>
+              <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+                {members.slice(0, 12).map((member) => {
+                  const name = member.profiles?.display_name ?? 'Member'
+                  const initial = name[0]?.toUpperCase() ?? '?'
+                  return (
+                    <div key={member.id} className="flex items-center gap-2.5">
+                      {member.profiles?.avatar_url ? (
+                        <img
+                          src={member.profiles.avatar_url}
+                          alt={name}
+                          className="size-8 shrink-0 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-teal-100 text-xs font-semibold text-teal-600 dark:bg-teal-950 dark:text-teal-300">
+                          {initial}
+                        </div>
+                      )}
+                      <span className="truncate text-sm text-zinc-700 dark:text-zinc-300">{name}</span>
+                    </div>
+                  )
+                })}
+              </div>
+              {members.length > 12 && (
+                <span className="mt-3 inline-block rounded-full bg-zinc-100 px-2.5 py-1 text-xs font-medium text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
+                  +{members.length - 12} more
+                </span>
+              )}
+            </div>
           )}
 
           {/* Join */}
@@ -184,6 +262,7 @@ export default async function CommuneDetailPage({
             </div>
           )}
         </div>
+
       </main>
     </div>
   )

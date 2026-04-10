@@ -48,7 +48,27 @@ insert into auth.users (
   ('22222222-0000-0000-0000-000000000015', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'olivia@example.com',  crypt('password123', gen_salt('bf')), now(), now(), now(), '{"provider":"email","providers":["email"]}', '{}', false, '', '', '', '')
 on conflict (id) do nothing;
 
--- ─── 3. Members (one per commune so each shows at least 1 member) ───────────
+-- ─── 3. Profiles ────────────────────────────────────────────────────────────
+
+insert into profiles (id, display_name, avatar_url) values
+  ('22222222-0000-0000-0000-000000000001', 'Alice',  null),
+  ('22222222-0000-0000-0000-000000000002', 'Bob',    null),
+  ('22222222-0000-0000-0000-000000000003', 'Carol',  null),
+  ('22222222-0000-0000-0000-000000000004', 'David',  null),
+  ('22222222-0000-0000-0000-000000000005', 'Eva',    null),
+  ('22222222-0000-0000-0000-000000000006', 'Felix',  null),
+  ('22222222-0000-0000-0000-000000000007', 'Grace',  null),
+  ('22222222-0000-0000-0000-000000000008', 'Henry',  null),
+  ('22222222-0000-0000-0000-000000000009', 'Iris',   null),
+  ('22222222-0000-0000-0000-000000000010', 'James',  null),
+  ('22222222-0000-0000-0000-000000000011', 'Kate',   null),
+  ('22222222-0000-0000-0000-000000000012', 'Liam',   null),
+  ('22222222-0000-0000-0000-000000000013', 'Mia',    null),
+  ('22222222-0000-0000-0000-000000000014', 'Noah',   null),
+  ('22222222-0000-0000-0000-000000000015', 'Olivia', null)
+on conflict (id) do update set display_name = excluded.display_name;
+
+-- ─── 4. Members (one per commune so each shows at least 1 member) ───────────
 
 insert into members (commune_id, user_id) values
   -- Berlin Trail Runners (8 members)
@@ -161,7 +181,7 @@ insert into members (commune_id, user_id) values
   ('11111111-0000-0000-0000-000000000015', '22222222-0000-0000-0000-000000000013')
 on conflict do nothing;
 
--- ─── 4. Events ──────────────────────────────────────────────────────────────
+-- ─── 5. Events ──────────────────────────────────────────────────────────────
 
 insert into events (commune_id, title, description, event_date, location) values
   -- Berlin Trail Runners
