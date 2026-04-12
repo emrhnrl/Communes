@@ -13,6 +13,19 @@
           }
         ]
       }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"process.stdin.resume();let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{const i=JSON.parse(d);const f=i.tool_input&&i.tool_input.file_path||'';if(f.match(/\\.(ts|tsx)$/)){const{execSync}=require('child_process');try{execSync('npx eslint \"'+f+'\" --max-warnings=0',{stdio:'inherit',cwd:'c:/Users/emrhnrl/communes'});}catch(e){process.exit(1);}}});\"",
+            "statusMessage": "Linting edited file...",
+            "timeout": 30
+          }
+        ]
+      }
     ]
   }
 }

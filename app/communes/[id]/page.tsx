@@ -2,11 +2,13 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { CommuneQueryRow, parseCommuneWithMemberCount } from '@/lib/db'
-import { Database } from '@/lib/types'
+import { Database, CommuneWithMemberCount } from '@/lib/types'
 import AppHeader from '@/app/components/AppHeader'
 import AuthButton from '@/app/components/AuthButton'
+import CommuneCard from '@/app/components/CommuneCard'
 import EventCard from '@/app/components/EventCard'
 import JoinButton from './JoinButton'
+import DeleteCommuneButton from './DeleteCommuneButton'
 
 type Event = Database['public']['Tables']['events']['Row']
 
@@ -72,17 +74,63 @@ async function getMembers(communeId: string): Promise<MemberWithProfile[]> {
   }))
 }
 
-async function getIsMember(communeId: string): Promise<boolean> {
+async function getSimilarCommunes(communeId: string): Promise<CommuneWithMemberCount[]> {
+  const supabase = await createClient()
+  const { data } = await supabase.rpc('similar_communes', { commune_id: communeId })
+  return (data ?? []).map((row: CommuneWithMemberCount & { member_count: number }) => ({
+    ...row,
+    member_count: Number(row.member_count),
+  }))
+}
+
+async function getCurrentUserId(): Promise<string | null> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return false
+  return user?.id ?? null
+}
+
+async function getIsMember(communeId: string, userId: string | null): Promise<boolean> {
+  if (!userId) return false
+  const supabase = await createClient()
   const { data } = await supabase
     .from('members')
     .select('id')
     .eq('commune_id', communeId)
-    .eq('user_id', user.id)
+    .eq('user_id', userId)
     .maybeSingle()
   return !!data
+}
+
+type RsvpData = {
+  rsvpCounts: Record<string, number>
+  userRsvpEventIds: Set<string>
+  isLoggedIn: boolean
+}
+
+async function getRsvpData(eventIds: string[], userId: string | null): Promise<RsvpData> {
+  if (eventIds.length === 0) {
+    return { rsvpCounts: {}, userRsvpEventIds: new Set(), isLoggedIn: !!userId }
+  }
+
+  const supabase = await createClient()
+
+  const [rsvpRows, userRsvpRows] = await Promise.all([
+    supabase.from('rsvps').select('event_id').in('event_id', eventIds),
+    userId
+      ? supabase.from('rsvps').select('event_id').eq('user_id', userId).in('event_id', eventIds)
+      : Promise.resolve({ data: [] }),
+  ])
+
+  const rsvpCounts: Record<string, number> = {}
+  for (const row of rsvpRows.data ?? []) {
+    rsvpCounts[row.event_id] = (rsvpCounts[row.event_id] ?? 0) + 1
+  }
+
+  const userRsvpEventIds = new Set(
+    (userRsvpRows.data ?? []).map((r) => r.event_id)
+  )
+
+  return { rsvpCounts, userRsvpEventIds, isLoggedIn: !!userId }
 }
 
 export default async function CommuneDetailPage({
@@ -91,14 +139,23 @@ export default async function CommuneDetailPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const [commune, events, isMember, members] = await Promise.all([
+
+  const currentUserId = await getCurrentUserId()
+
+  const [commune, events, isMember, members, similarCommunes] = await Promise.all([
     getCommune(id),
     getEvents(id),
-    getIsMember(id),
+    getIsMember(id, currentUserId),
     getMembers(id),
+    getSimilarCommunes(id),
   ])
 
   if (!commune) notFound()
+
+  const isOwner = currentUserId !== null && commune.created_by === currentUserId
+
+  const eventIds = events.map((e) => e.id)
+  const { rsvpCounts, userRsvpEventIds, isLoggedIn } = await getRsvpData(eventIds, currentUserId)
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
@@ -228,9 +285,21 @@ export default async function CommuneDetailPage({
             </div>
           )}
 
-          {/* Join */}
+          {/* Join / owner actions */}
           <div className="mt-8">
-            <JoinButton communeId={commune.id} initialIsMember={isMember} />
+            {isOwner ? (
+              <div className="flex items-center gap-3">
+                <Link
+                  href={`/communes/${commune.id}/edit`}
+                  className="rounded-full border border-teal-600 px-4 py-2 text-sm font-medium text-teal-600 transition-colors hover:bg-teal-50 dark:border-teal-500 dark:text-teal-400 dark:hover:bg-teal-950"
+                >
+                  Edit commune
+                </Link>
+                <DeleteCommuneButton communeId={commune.id} />
+              </div>
+            ) : (
+              <JoinButton communeId={commune.id} initialIsMember={isMember} />
+            )}
           </div>
         </div>
 
@@ -257,11 +326,32 @@ export default async function CommuneDetailPage({
           ) : (
             <div className="flex flex-col gap-3">
               {events.map((event) => (
-                <EventCard key={event.id} event={event} />
+                <EventCard
+                  key={event.id}
+                  event={event}
+                  rsvpCount={rsvpCounts[event.id] ?? 0}
+                  initialIsGoing={userRsvpEventIds.has(event.id)}
+                  isLoggedIn={isLoggedIn}
+                  isOwner={currentUserId !== null && event.created_by === currentUserId}
+                />
               ))}
             </div>
           )}
         </div>
+
+        {/* Similar communes */}
+        {similarCommunes.length > 0 && (
+          <div className="mt-8">
+            <h2 className="mb-4 text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+              Similar communes
+            </h2>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {similarCommunes.map((similar) => (
+                <CommuneCard key={similar.id} commune={similar} memberCount={similar.member_count} />
+              ))}
+            </div>
+          </div>
+        )}
 
       </main>
     </div>

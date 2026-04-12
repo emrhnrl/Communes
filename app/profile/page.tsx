@@ -12,6 +12,17 @@ type CommuneRow = {
   city: string | null
 }
 
+type UpcomingEvent = {
+  id: string
+  title: string
+  event_date: string
+  location: string | null
+  commune_id: string
+  communes: {
+    name: string
+  } | null
+}
+
 function getInitials(name: string): string {
   return name
     .split(' ')
@@ -31,6 +42,25 @@ async function getJoinedCommunes(userId: string): Promise<CommuneRow[]> {
   return data.map((row) => row.communes as unknown as CommuneRow)
 }
 
+async function getUpcomingEvents(userId: string): Promise<UpcomingEvent[]> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('rsvps')
+    .select('events(id, title, event_date, location, commune_id, communes(name))')
+    .eq('user_id', userId)
+
+  if (!data) return []
+
+  const now = new Date()
+  return (data as unknown as { events: UpcomingEvent | null }[])
+    .map((row) => row.events)
+    .filter((event): event is UpcomingEvent => {
+      if (!event) return false
+      return new Date(event.event_date) >= now
+    })
+    .sort((a, b) => new Date(a.event_date).getTime() - new Date(b.event_date).getTime())
+}
+
 export default async function ProfilePage() {
   const supabase = await createClient()
 
@@ -42,9 +72,10 @@ export default async function ProfilePage() {
     redirect('/auth/sign-in')
   }
 
-  const [profileResult, communes] = await Promise.all([
+  const [profileResult, communes, upcomingEvents] = await Promise.all([
     supabase.from('profiles').select('*').eq('id', user.id).maybeSingle(),
     getJoinedCommunes(user.id),
+    getUpcomingEvents(user.id),
   ])
 
   const profile = profileResult.data
@@ -143,6 +174,58 @@ export default async function ProfilePage() {
                   </div>
                 </Link>
               ))}
+            </div>
+          )}
+        </div>
+
+        {/* Upcoming events */}
+        <div className="mt-8">
+          <h2 className="mb-4 text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+            Your upcoming events
+          </h2>
+
+          {upcomingEvents.length === 0 ? (
+            <p className="text-sm italic text-zinc-400 dark:text-zinc-500">
+              You haven&apos;t RSVP&apos;d to any upcoming events yet.
+            </p>
+          ) : (
+            <div className="flex flex-col gap-2">
+              {upcomingEvents.map((event) => {
+                const date = new Date(event.event_date)
+                const dateLabel = date.toLocaleDateString('en-GB', {
+                  weekday: 'short',
+                  day: 'numeric',
+                  month: 'short',
+                  year: 'numeric',
+                })
+                const timeLabel = date.toLocaleTimeString('en-GB', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })
+                return (
+                  <div
+                    key={event.id}
+                    className="flex items-center justify-between rounded-2xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900"
+                  >
+                    <div className="min-w-0">
+                      <p className="truncate font-medium text-zinc-900 dark:text-zinc-50">
+                        {event.title}
+                      </p>
+                      {event.communes && (
+                        <Link
+                          href={`/communes/${event.commune_id}`}
+                          className="mt-0.5 block truncate text-sm text-teal-600 transition-colors hover:text-teal-500 dark:text-teal-400"
+                        >
+                          {event.communes.name}
+                        </Link>
+                      )}
+                    </div>
+                    <span className="ml-4 shrink-0 text-xs text-zinc-400 dark:text-zinc-500">
+                      {dateLabel} · {timeLabel}
+                    </span>
+                  </div>
+                )
+              })}
             </div>
           )}
         </div>

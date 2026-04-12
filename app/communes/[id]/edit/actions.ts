@@ -7,7 +7,8 @@ export type FormState = {
   error: string | null
 }
 
-export async function createCommune(
+export async function updateCommune(
+  communeId: string,
   _prev: FormState,
   formData: FormData,
 ): Promise<FormState> {
@@ -22,22 +23,35 @@ export async function createCommune(
   if (city && city.length > 100) return { error: 'City must be 100 characters or fewer.' }
 
   const supabase = await createClient()
-
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'You must be signed in to create a commune.' }
+  if (!user) return { error: 'You must be signed in to edit a commune.' }
 
-  const { error } = await supabase.from('communes').insert({
-    name,
-    description,
-    category,
-    city,
-    created_by: user.id,
-  })
+  const { error } = await supabase
+    .from('communes')
+    .update({ name, description, category, city })
+    .eq('id', communeId)
+    .eq('created_by', user.id)
 
   if (error) {
-    console.error('Failed to create commune:', error.message)
+    console.error('Failed to update commune:', error.message)
     return { error: 'Something went wrong. Please try again.' }
   }
+
+  redirect(`/communes/${communeId}`)
+}
+
+export async function deleteCommune(communeId: string): Promise<void> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return
+
+  const { error } = await supabase
+    .from('communes')
+    .delete()
+    .eq('id', communeId)
+    .eq('created_by', user.id)
+
+  if (error) throw new Error('Failed to delete commune.')
 
   redirect('/')
 }

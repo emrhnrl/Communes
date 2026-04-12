@@ -9,6 +9,7 @@ export type Database = {
           category: string | null
           city: string | null
           created_at: string
+          created_by: string | null
         }
       }
       members: {
@@ -28,6 +29,7 @@ export type Database = {
           event_date: string
           location: string | null
           created_at: string
+          created_by: string | null
         }
       }
       profiles: {

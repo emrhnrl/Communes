@@ -1,12 +1,25 @@
+import Link from 'next/link'
 import { Database } from '@/lib/types'
+import RsvpButton from './RsvpButton'
+import DeleteEventButton from './DeleteEventButton'
 
 type Event = Database['public']['Tables']['events']['Row']
 
 interface EventCardProps {
   event: Event
+  rsvpCount: number
+  initialIsGoing: boolean
+  isLoggedIn: boolean
+  isOwner?: boolean
 }
 
-export default function EventCard({ event }: EventCardProps) {
+export default function EventCard({
+  event,
+  rsvpCount,
+  initialIsGoing,
+  isLoggedIn,
+  isOwner,
+}: EventCardProps) {
   const date = new Date(event.event_date)
   const dateLabel = date.toLocaleDateString('en-GB', {
     weekday: 'short',
@@ -24,7 +37,7 @@ export default function EventCard({ event }: EventCardProps) {
       <div className="flex items-start justify-between gap-4">
         <h3 className="font-semibold text-zinc-900 dark:text-zinc-50">{event.title}</h3>
         <span className="shrink-0 text-xs text-zinc-400 dark:text-zinc-500">
-          {dateLabel} Â· {timeLabel}
+          {dateLabel} · {timeLabel}
         </span>
       </div>
 
@@ -42,6 +55,26 @@ export default function EventCard({ event }: EventCardProps) {
           {event.location}
         </p>
       )}
+
+      <div className="mt-4 flex items-center justify-between gap-3">
+        <RsvpButton
+          eventId={event.id}
+          initialIsGoing={initialIsGoing}
+          initialCount={rsvpCount}
+          isLoggedIn={isLoggedIn}
+        />
+        {isOwner && (
+          <div className="flex items-center gap-3">
+            <Link
+              href={`/communes/${event.commune_id}/events/${event.id}/edit`}
+              className="text-xs text-zinc-400 underline-offset-2 transition-colors hover:text-teal-600 hover:underline dark:text-zinc-500"
+            >
+              Edit
+            </Link>
+            <DeleteEventButton communeId={event.commune_id} eventId={event.id} />
+          </div>
+        )}
+      </div>
     </div>
   )
 }
