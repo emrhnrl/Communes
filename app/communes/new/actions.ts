@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { moderateContent } from '@/lib/moderation'
 
 export type FormState = {
   error: string | null
@@ -20,6 +21,9 @@ export async function createCommune(
   if (name.length > 100) return { error: 'Name must be 100 characters or fewer.' }
   if (description && description.length > 500) return { error: 'Description must be 500 characters or fewer.' }
   if (city && city.length > 100) return { error: 'City must be 100 characters or fewer.' }
+
+  const moderation = await moderateContent({ title: name, description: description ?? '' })
+  if (!moderation.approved) return { error: moderation.reason }
 
   const supabase = await createClient()
 

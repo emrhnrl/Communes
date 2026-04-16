@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { moderateContent } from '@/lib/moderation'
 
 export type FormState = {
   error: string | null
@@ -26,6 +27,9 @@ export async function createEvent(
 
   const [h, m] = time.split(':')
   const eventDate = `${day}T${h.padStart(2, '0')}:${m}:00`
+
+  const moderation = await moderateContent({ title, description: description ?? '' })
+  if (!moderation.approved) return { error: moderation.reason }
 
   const supabase = await createClient()
 
